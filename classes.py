@@ -1,18 +1,21 @@
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
 class Driver:
-    def __init__(self, id: int, name: str, salary: int, autopark_id: int):
-        self.id = id
-        self.name = name
-        self.salary = salary
-        self.autopark_id = autopark_id
+    id: int
+    name: str
+    salary: int
+    autopark_id: int
 
 
+@dataclass(frozen=True)
 class Autopark:
-    def __init__(self, id: int, name: str):
-        self.id = id
-        self.name = name
+    id: int
+    name: str
 
 
+@dataclass(frozen=True)
 class ConnectionDriverToAutopark:
-    def __init__(self, autopark_id: int, driver_id: int):
-        self.autopark_id = autopark_id
-        self.driver_id = driver_id
+    autopark_id: int
+    driver_id: int

@@ -1,4 +1,3 @@
-from operator import itemgetter
 from classes import Driver, Autopark, ConnectionDriverToAutopark
 
 autoparks = [
@@ -34,46 +33,48 @@ def main():
         for d in drivers
         if d.autopark_id == ap.id
     ]
-    
+
     many_to_many_temp = [
-        (ap.name, conn.autopark_id, conn.driver_id)
+        (ap.name, conn.driver_id)
         for ap in autoparks
         for conn in connections
         if ap.id == conn.autopark_id
     ]
-    
+
     many_to_many = [
-        (d.name, d.salary, ap_name)
-        for ap_name, ap_id, driver_id in many_to_many_temp
+        (ap_name, d.name)
+        for ap_name, driver_id in many_to_many_temp
         for d in drivers
         if d.id == driver_id
     ]
 
     print('Задание Г1')
-    res_g1 = {}
-    for ap in autoparks:
-        if ap.name.startswith('А'):
-
-            ap_drivers = list(filter(lambda item: item[2] == ap.name, one_to_many))
-            drivers_names = [name for name, _, _ in ap_drivers]
-            res_g1[ap.name] = drivers_names
+    res_g1 = {
+        ap.name: [
+            driver_name
+            for driver_name, _, autopark_name in one_to_many
+            if autopark_name == ap.name
+        ]
+        for ap in autoparks
+        if ap.name.startswith('А')
+    }
     print(res_g1)
 
     print('\nЗадание Г2')
-    res_g2_unsorted = []
-    for ap in autoparks:
-        
-        ap_drivers = list(filter(lambda item: item[2] == ap.name, one_to_many))
-        if len(ap_drivers) > 0:
-            salaries = [salary for _, salary, _ in ap_drivers]
-            max_salary = max(salaries)
-            res_g2_unsorted.append((ap.name, max_salary))
-    res_g2 = sorted(res_g2_unsorted, key=itemgetter(1), reverse=True)
+    res_g2 = sorted(
+        (
+            (ap.name, max(salary for _, salary, autopark_name in one_to_many
+                         if autopark_name == ap.name))
+            for ap in autoparks
+            if any(autopark_name == ap.name for _, _, autopark_name in one_to_many)
+        ),
+        key=lambda item: item[1],
+        reverse=True,
+    )
     print(res_g2)
 
     print('\nЗадание Г3')
-    res_g3_pairs = [(item[2], item[0]) for item in many_to_many]
-    res_g3 = sorted(res_g3_pairs, key=itemgetter(0))
+    res_g3 = sorted(many_to_many, key=lambda item: item[0])
     print(res_g3)
 
 
